@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <time.h> // For measuring execution time
+
+// Function to swap elements
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+// Function to partition the array
+int partition(int array[], int low, int high) {
+    int pivot = array[high]; // Select the last element as pivot
+    int i = (low - 1); // Pointer for smaller elements
+
+    for (int j = low; j < high; j++) {
+        if (array[j] <= pivot) {
+            i++;
+            swap(&array[i], &array[j]); // Swap elements
+        }
+    }
+
+    swap(&array[i + 1], &array[high]); // Swap pivot into correct position
+    return (i + 1); // Return pivot index
+}
+
+// Quick Sort function
+void quickSort(int array[], int low, int high) {
+    if (low < high) {
+        int pi = partition(array, low, high);
+        quickSort(array, low, pi - 1); // Sort left sub-array
+        quickSort(array, pi + 1, high); // Sort right sub-array
+    }
+}
+
+// Function to print array
+void printArray(int array[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d  ", array[i]);
+    }
+    printf("\n");
+}
+
+// Main function
+int main() {
+    int n;
+
+    // Get user input for array size
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    int data[n]; // Declare array of size 'n'
+
+    // Get user input for array elements
+    printf("Enter %d elements: ", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &data[i]);
+    }
+
+    // Print unsorted array
+    printf("Unsorted Array:\n");
+    printArray(data, n);
+
+    // Start measuring time
+    clock_t start = clock();
+
+    // Perform Quick Sort
+    quickSort(data, 0, n - 1);
+
+    // Stop measuring time
+    clock_t end = clock();
+
+    // Print sorted array
+    printf("Sorted array in ascending order:\n");
+    printArray(data, n);
+
+    // Calculate execution time in seconds
+    double execution_time = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("Execution Time: %f seconds\n", execution_time);
+
+    return 0;
+}
