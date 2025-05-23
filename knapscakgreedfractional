@@ -1,0 +1,60 @@
+#include <stdio.h>
+
+typedef struct {
+    float value, weight;
+} Item;
+
+void fractionalKnapsack(Item items[], int n, float capacity) {
+    float totalValue = 0, remain = capacity;
+
+    // Calculate value-to-weight ratio
+    float ratio[n];
+    for (int i = 0; i < n; i++)
+        ratio[i] = items[i].value / items[i].weight;
+
+    // Simple selection sort by ratio descending
+    for (int i = 0; i < n -1; i++) {
+        for (int j = i +1; j < n; j++) {
+            if (ratio[j] > ratio[i]) {
+                float tempR = ratio[i]; ratio[i] = ratio[j]; ratio[j] = tempR;
+                Item tempI = items[i]; items[i] = items[j]; items[j] = tempI;
+            }
+        }
+    }
+
+    for (int i = 0; i < n && remain > 0; i++) {
+        if (items[i].weight <= remain) {
+            remain -= items[i].weight;
+            totalValue += items[i].value;
+            printf("Taken whole item %.2f\n", items[i].value);
+        } else {
+            float frac = remain / items[i].weight;
+            totalValue += items[i].value * frac;
+            printf("Taken %.2f fraction of item %.2f\n", frac, items[i].value);
+            remain = 0;
+        }
+    }
+
+    printf("Total value = %.2f\n", totalValue);
+}
+
+int main() {
+    int n;
+    float capacity;
+    printf("Number of items: ");
+    scanf("%d", &n);
+
+    Item items[n];
+    for (int i = 0; i < n; i++) {
+        printf("Value of item %d: ", i + 1);
+        scanf("%f", &items[i].value);
+        printf("Weight of item %d: ", i + 1);
+        scanf("%f", &items[i].weight);
+    }
+
+    printf("Knapsack capacity: ");
+    scanf("%f", &capacity);
+
+    fractionalKnapsack(items, n, capacity);
+    return 0;
+}
