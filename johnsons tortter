@@ -1,0 +1,51 @@
+#include <stdio.h>
+#define L -1
+#define R 1
+
+void print(int a[], int d[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d%s ", a[i], d[i] == L ? "<" : ">");
+    printf("\n");
+}
+
+int getMobile(int a[], int d[], int n) {
+    int m = 0;
+    for (int i = 0; i < n; i++)
+        if ((d[i] == L && i > 0 && a[i] > a[i-1]) ||
+            (d[i] == R && i < n-1 && a[i] > a[i+1]))
+            if (a[i] > m) m = a[i];
+    return m;
+}
+
+int pos(int a[], int n, int val) {
+    for (int i = 0; i < n; i++) if (a[i] == val) return i;
+    return -1;
+}
+
+void jt(int n) {
+    int a[n], d[n];
+    for (int i = 0; i < n; i++) a[i] = i+1, d[i] = L;
+    print(a, d, n);
+
+    while (1) {
+        int m = getMobile(a, d, n);
+        if (m == 0) break;
+        int p = pos(a, n, m), q = (d[p] == L) ? p - 1 : p + 1;
+
+        int t = a[p]; a[p] = a[q]; a[q] = t;
+        t = d[p]; d[p] = d[q]; d[q] = t;
+
+        for (int i = 0; i < n; i++)
+            if (a[i] > m) d[i] *= -1;
+
+        print(a, d, n);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter n: ");
+    scanf("%d", &n);
+    jt(n);
+    return 0;
+}
